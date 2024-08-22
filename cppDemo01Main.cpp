@@ -148,6 +148,24 @@ void cppDemo01Frame::upDateTxtFile()
 
 }
 
+/**
+ * @brief Joins all strings from a `wxArrayString` into a single `wxString`.
+ *
+ * This function iterates through all elements of the given `wxArrayString`
+ * and concatenates them into a single `wxString`.
+ *
+ * @param arr The `wxArrayString` containing strings to be joined.
+ * @return A `wxString` representing the concatenation of all elements
+ *         in the input array.
+ */
+ wxString JoinWxArrayString(const wxArrayString& arr) {
+    wxString result;
+    for (const auto& str : arr) {
+        result += str;
+    }
+    return result;
+}
+
 void cppDemo01Frame::OnvarMenuLCBSelected(wxCommandEvent& event)
 {
     wxFileDialog    fdlog(this, "Please Select The Desired Text File Now!","/home/archman/workspace/cb/cpp", "", "*.cbp");
