@@ -1,4 +1,5 @@
-This project showcases c++ development using wxWidgets and codeblocks.
+This project showcases c++ development using wxWidgets and CodeBlocks.
+Typically you would read a source code file then apply changes while performing a update (inplace) the source file.
 
 Several functions are made available that perform various programmer tasks.
 <ul>
