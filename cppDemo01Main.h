@@ -11,6 +11,7 @@
 #define CPPDEMO01MAIN_H
 #include <wx/arrstr.h>
 #include <wx/textfile.h>
+#include <wx/filedlg.h>
 
 //(*Headers(cppDemo01Frame)
 #include <wx/frame.h>
@@ -40,6 +41,8 @@ public:
     void upDateTxtFile();
 
     std::vector<changeStrings> cs;
+    wxString SelFile();
+//    wxFileDialog    fdlog;
 
 private:
 

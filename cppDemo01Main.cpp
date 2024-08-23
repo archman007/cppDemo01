@@ -114,14 +114,12 @@ void cppDemo01Frame::OnAbout(wxCommandEvent& event)
 
 void cppDemo01Frame::strArrToTextFile()
 {
-//    fileName = "/home/archman/workspace/cb/cpp/cppDemo01/bin/Debug/output.cbp";
     fileName = "/home/archman/workspace/cb/cpp/myCrud/bin/Debug/output.cbp";
+    srcFile.clear();
     tfile.Open(fileName);
-    // Clear the file content if it already exists
-    tfile.Clear();
-    for (int ii = 0; ii < srcFile.Count(); ii++)
+    while (!tfile.Eof())
     {
-        tfile.AddLine(srcFile[ii].ToStdString());
+        srcFile.Add(tfile.GetNextLine());
     }
     tfile.Write();
     tfile.Close();
@@ -129,7 +127,7 @@ void cppDemo01Frame::strArrToTextFile()
 
 void cppDemo01Frame::txtToStrArray()
 {
-    srcFile.clear();
+    /* srcFile.clear();
     tfile.Open(file);
     str = tfile.GetFirstLine();
     srcFile.Add(str);
@@ -139,13 +137,55 @@ void cppDemo01Frame::txtToStrArray()
         srcFile.Add(str);
     }
     tfile.Close();
+    */
+
+    srcFile.clear();
+    tfile.Open(file);
+    while (!tfile.Eof())
+    {
+        srcFile.Add(tfile.GetNextLine());
+    }
+    tfile.Close();
 }
 
+/**
+ * @brief Updates a text file by applying a series of string replacements.
+ *
+ * This function iterates over each line of the source file `srcFile` and performs
+ * string replacements based on a collection of replacement pairs `cs`. Each line
+ * in `srcFile` is modified by replacing occurrences of a specified substring (`fro`)
+ * with another substring (`too`). The modified lines are stored back in `cmd` for
+ * further processing.
+ *
+ * @note This function assumes that `srcFile` is a collection of strings (e.g., a vector),
+ * and `cs` is a collection of structs or classes containing `fro` and `too` strings.
+ * The `boost::replace_all` function from the Boost library is used to perform the replacements.
+ *
+ * Example usage:
+ * ```
+ * struct ChangeString {
+ *     std::string fro;
+ *     std::string too;
+ * };
+ *
+ * cppDemo01Frame::upDateTxtFile();
+ * ```
+ */
 void cppDemo01Frame::upDateTxtFile()
 {
     std::string cmd;
-    boost::replace_all(cmd, "/archman/", "/archbrooks/");
-
+    for (auto& line : srcFile)
+    {
+        int ii = 0;
+        for (const auto& changeStrings : cs)
+        {
+            std::string cmd;
+            cmd = line;
+            boost::replace_all(cmd, cs[ii].fro, cs[ii].too);
+            line = cmd;
+            ii++;
+        }
+    }
 }
 
 /**
@@ -158,30 +198,47 @@ void cppDemo01Frame::upDateTxtFile()
  * @return A `wxString` representing the concatenation of all elements
  *         in the input array.
  */
- wxString JoinWxArrayString(const wxArrayString& arr) {
+wxString JoinWxArrayString(const wxArrayString& arr)
+{
     wxString result;
-    for (const auto& str : arr) {
+    for (const auto& str : arr)
+    {
         result += str;
     }
     return result;
 }
 
-void cppDemo01Frame::OnvarMenuLCBSelected(wxCommandEvent& event)
+wxString cppDemo01Frame::SelFile()
 {
-    wxFileDialog    fdlog(this, "Please Select The Desired Text File Now!","/home/archman/workspace/cb/cpp", "", "*.cbp");
+    wxFileDialog fdlog(this, "Please Select The Desired Text File Now!","/home/archman/workspace/cb/cpp", "", "*.cbp");
     if (fdlog.ShowModal() == wxID_OK)
     {
         file = fdlog.GetPath();
+        return file;
+    }
+
+}
+
+void cppDemo01Frame::OnvarMenuLCBSelected(wxCommandEvent& event)
+{
+    SelFile();
+//    wxFileDialog fdlog(this, "Please Select The Desired Text File Now!","/home/archman/workspace/cb/cpp", "", "*.cbp");
+    if (file > "")
+    {
+        //file = fdlog.GetPath();
         /* if (boost::filesystem::exists(file.ToStdString()) == true)
         {
             file.Clear();
         }
         */
         txtToStrArray();
+//         Record newRecord = {1, "New Record"};
+        changeStrings newRecord = {"frs", "New Record"};
+        cs.push_back(newRecord);
         cs[0].fro = "YourProjectName";
         cs[0].too = "YoProjName";
         upDateTxtFile();
         strArrToTextFile();
     }
-    fdlog.Destroy();
+//    fdlog.Destroy();
 }
