@@ -1,5 +1,5 @@
 This project showcases c++ development using wxWidgets and CodeBlocks.
-Typically you would read a source code file then apply changes while performing a update (inplace) the source file.
+Typically you would read a source code file then apply changes while performing a update (inplace) of the source file or create a new file containing the updates source.
 
 Several functions are made available that perform various programmer tasks.
 <ul>
