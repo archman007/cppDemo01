@@ -13,7 +13,8 @@
 #include <wx/filedlg.h>
 #include <boost/filesystem.hpp>
 #include <boost/algorithm/string.hpp>
-
+#include <mysql++.h>
+#include <wx/wx.h>
 
 //(*InternalHeaders(cppDemo01Frame)
 #include <wx/intl.h>
@@ -50,6 +51,7 @@ wxString wxbuildinfo(wxbuildinfoformat format)
 
 //(*IdInit(cppDemo01Frame)
 const long cppDemo01Frame::idMenuFCP = wxNewId();
+const long cppDemo01Frame::idMenuCP = wxNewId();
 const long cppDemo01Frame::idMenuQuit = wxNewId();
 const long cppDemo01Frame::idMenuAbout = wxNewId();
 const long cppDemo01Frame::ID_STATUSBAR1 = wxNewId();
@@ -74,6 +76,8 @@ cppDemo01Frame::cppDemo01Frame(wxWindow* parent,wxWindowID id)
     Menu1 = new wxMenu();
     varMenuLCB = new wxMenuItem(Menu1, idMenuFCP, _("Copy File To Clipboard"), _("Load File To Clipboard"), wxITEM_NORMAL);
     Menu1->Append(varMenuLCB);
+    menClone1 = new wxMenuItem(Menu1, idMenuCP, _("Clone Project"), _("Clone A Project"), wxITEM_NORMAL);
+    Menu1->Append(menClone1);
     MenuItem1 = new wxMenuItem(Menu1, idMenuQuit, _("Quit\tAlt-F4"), _("Quit the application"), wxITEM_NORMAL);
     Menu1->Append(MenuItem1);
     MenuBar1->Append(Menu1, _("&File"));
@@ -90,6 +94,7 @@ cppDemo01Frame::cppDemo01Frame(wxWindow* parent,wxWindowID id)
     SetStatusBar(StatusBar1);
 
     Connect(idMenuFCP,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&cppDemo01Frame::OnvarMenuLCBSelected);
+    Connect(idMenuCP,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&cppDemo01Frame::OnmenClone1Selected);
     Connect(idMenuQuit,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&cppDemo01Frame::OnQuit);
     Connect(idMenuAbout,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&cppDemo01Frame::OnAbout);
     //*)
@@ -114,31 +119,29 @@ void cppDemo01Frame::OnAbout(wxCommandEvent& event)
 
 void cppDemo01Frame::strArrToTextFile()
 {
-    fileName = "/home/archman/workspace/cb/cpp/myCrud/bin/Debug/output.cbp";
-    srcFile.clear();
-    tfile.Open(fileName);
-    while (!tfile.Eof())
+    fileName = "/home/archman/workspace/cb/cpp/cppDemo01/bin/Debug/output.cbp";
+    wxTextFile file(fileName);
+    if (!file.Exists())
     {
-        srcFile.Add(tfile.GetNextLine());
+        file.Create();
     }
-    tfile.Write();
-    tfile.Close();
+    else
+    {
+        file.Open();
+    }
+
+    file.Clear(); // Clear existing content
+    for (const auto& line : srcFile)
+    {
+        file.AddLine(line);
+    }
+
+    file.Write();
+    file.Close();
 }
 
 void cppDemo01Frame::txtToStrArray()
 {
-    /* srcFile.clear();
-    tfile.Open(file);
-    str = tfile.GetFirstLine();
-    srcFile.Add(str);
-    while(!tfile.Eof())
-    {
-        str = tfile.GetNextLine();
-        srcFile.Add(str);
-    }
-    tfile.Close();
-    */
-
     srcFile.clear();
     tfile.Open(file);
     while (!tfile.Eof())
@@ -209,26 +212,17 @@ wxString JoinWxArrayString(const wxArrayString& arr)
 }
 
 
- wxString cppDemo01Frame::SelFile()
+wxString cppDemo01Frame::SelFile()
 {
-**
- * @brief Displays a file dialog for the user to select a text file.
- *
- * This function creates a wxFileDialog, prompting the user to select a text file with the `.cbp` extension
- * from a specific directory. If the user confirms their selection, the file path is returned.
- *
- * @return wxString The selected file path if the user confirms the selection, otherwise an empty string.
- */
- wxFileDialog fdlog(this, "Please Select The Desired Text File Now!","/home/archman/workspace/cb/cpp", "", "*.cbp");
+    wxFileDialog fdlog(this, "Please Select The Desired Text File Now!","/home/archman/workspace/cb/cpp", "", "*.cbp");
     if (fdlog.ShowModal() == wxID_OK)
     {
         file = fdlog.GetPath();
         return file;
     }
-
 }
 
-void cppDemo01Frame::OnvarMenuLCBSelected(wxCommandEvent& event)
+void cppDemo01Frame::prodProjFile()
 {
     /*
      * Functionality:
@@ -245,11 +239,69 @@ void cppDemo01Frame::OnvarMenuLCBSelected(wxCommandEvent& event)
     if (file > "")
     {
         txtToStrArray();
-        changeStrings newRecord = {"frs", "New Record"};
+//       changeStrings newRecord = {"cppDemo01", "cppDemo02"};
+        changeStrings newRecord = {"cppDemo01", "cppMySkel1"};
         cs.push_back(newRecord);
-        cs[0].fro = "YourProjectName";
-        cs[0].too = "YoProjName";
         upDateTxtFile();
         strArrToTextFile();
     }
+}
+
+void cppDemo01Frame::mariaBase()
+{
+    const char* db = "bcswebtools";
+    const char* server = "localhost";
+    const char* user = "bcs";
+    const char* password = "YoPassword";
+
+    try
+    {
+        mysqlpp::Connection conn(db, server, user, password);
+
+        if (conn.connected())
+        {
+            std::cout << "Database connection successful!" << std::endl;
+        }
+        else
+        {
+            std::cout << "Database connection failed!" << std::endl;
+        }
+    }
+    catch (const mysqlpp::Exception& ex)
+    {
+        std::cerr << "MySQL++ error: " << ex.what() << std::endl;
+    }
+}
+
+void cppDemo01Frame::OnvarMenuLCBSelected(wxCommandEvent& event)
+{
+    // mariaBase();
+
+    prodProjFile();
+}
+
+wxString cppDemo01Frame::GetFamID()
+{
+    wxTextEntryDialog dialog(this, "Select Family Id Now:", "Get Family ID");
+    if (dialog.ShowModal() == wxID_OK)
+    {
+        wxString text = dialog.GetValue();
+        return text;
+    }
+}
+
+bool dirExists(const std::string& dirPath)
+{
+    return boost::filesystem::exists(dirPath) && boost::filesystem::is_directory(dirPath);
+}
+
+void cppDemo01Frame::OnmenClone1Selected(wxCommandEvent& event)
+{
+    famID = GetFamID();
+    rPath = "/home/archman/workspace/cb/cpp/" + famID;
+    if (!dirExists(rPath.ToStdString()))
+    {
+        boost::filesystem::create_directory(rPath.ToStdString());
+    }
+    famID = famID;
 }

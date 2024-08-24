@@ -27,7 +27,6 @@ bool cppDemo01App::OnInit()
     	Frame->Show();
     	SetTopWindow(Frame);
     }
-    //*)
     return wxsOK;
 
 }

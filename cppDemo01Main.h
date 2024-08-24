@@ -43,6 +43,11 @@ public:
     std::vector<changeStrings> cs;
     wxString SelFile();
 //    wxFileDialog    fdlog;
+    void prodProjFile();
+    void mariaBase();
+    wxString GetFamID();
+    wxString famID;
+    wxString rPath;
 
 private:
 
@@ -50,16 +55,19 @@ private:
     void OnQuit(wxCommandEvent& event);
     void OnAbout(wxCommandEvent& event);
     void OnvarMenuLCBSelected(wxCommandEvent& event);
+    void OnmenClone1Selected(wxCommandEvent& event);
     //*)
 
     //(*Identifiers(cppDemo01Frame)
     static const long idMenuFCP;
+    static const long idMenuCP;
     static const long idMenuQuit;
     static const long idMenuAbout;
     static const long ID_STATUSBAR1;
     //*)
 
     //(*Declarations(cppDemo01Frame)
+    wxMenuItem* menClone1;
     wxMenuItem* varMenuLCB;
     wxStatusBar* StatusBar1;
     //*)

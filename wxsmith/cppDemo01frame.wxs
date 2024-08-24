@@ -9,6 +9,11 @@
 					<help>Load File To Clipboard</help>
 					<handler function="OnvarMenuLCBSelected" entry="EVT_MENU" />
 				</object>
+				<object class="wxMenuItem" name="idMenuCP" variable="menClone1" member="yes">
+					<label>Clone Project</label>
+					<help>Clone A Project</help>
+					<handler function="OnmenClone1Selected" entry="EVT_MENU" />
+				</object>
 				<object class="wxMenuItem" name="idMenuQuit" variable="MenuItem1" member="no">
 					<label>Quit</label>
 					<accel>Alt-F4</accel>
