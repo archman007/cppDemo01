@@ -208,9 +208,18 @@ wxString JoinWxArrayString(const wxArrayString& arr)
     return result;
 }
 
-wxString cppDemo01Frame::SelFile()
+
+ wxString cppDemo01Frame::SelFile()
 {
-    wxFileDialog fdlog(this, "Please Select The Desired Text File Now!","/home/archman/workspace/cb/cpp", "", "*.cbp");
+**
+ * @brief Displays a file dialog for the user to select a text file.
+ *
+ * This function creates a wxFileDialog, prompting the user to select a text file with the `.cbp` extension
+ * from a specific directory. If the user confirms their selection, the file path is returned.
+ *
+ * @return wxString The selected file path if the user confirms the selection, otherwise an empty string.
+ */
+ wxFileDialog fdlog(this, "Please Select The Desired Text File Now!","/home/archman/workspace/cb/cpp", "", "*.cbp");
     if (fdlog.ShowModal() == wxID_OK)
     {
         file = fdlog.GetPath();
@@ -221,18 +230,21 @@ wxString cppDemo01Frame::SelFile()
 
 void cppDemo01Frame::OnvarMenuLCBSelected(wxCommandEvent& event)
 {
+    /*
+     * Functionality:
+     * 1. Calls SelFile() to select a file.
+     * 2. Checks if a file was successfully selected.
+     * 3. Converts text to a string array using txtToStrArray().
+     * 4. Creates a new `changeStrings` record with the values "frs" and "New Record".
+     * 5. Appends the new record to the `cs` vector.
+     * 6. Updates the first record in the `cs` vector, setting `fro` to "YourProjectName" and `too` to "YoProjName".
+     * 7. Updates the text file using upDateTxtFile().
+     * 8. Writes the string array back to the text file with strArrToTextFile().
+     */
     SelFile();
-//    wxFileDialog fdlog(this, "Please Select The Desired Text File Now!","/home/archman/workspace/cb/cpp", "", "*.cbp");
     if (file > "")
     {
-        //file = fdlog.GetPath();
-        /* if (boost::filesystem::exists(file.ToStdString()) == true)
-        {
-            file.Clear();
-        }
-        */
         txtToStrArray();
-//         Record newRecord = {1, "New Record"};
         changeStrings newRecord = {"frs", "New Record"};
         cs.push_back(newRecord);
         cs[0].fro = "YourProjectName";
@@ -240,5 +252,4 @@ void cppDemo01Frame::OnvarMenuLCBSelected(wxCommandEvent& event)
         upDateTxtFile();
         strArrToTextFile();
     }
-//    fdlog.Destroy();
 }
