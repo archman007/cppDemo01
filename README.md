@@ -1,5 +1,7 @@
 This project showcases c++ development using wxWidgets and CodeBlocks.
-Typically you would read a source code file then apply changes while performing a update (inplace) of the source file or create a new file containing the updated source.  Standard Template Library (STL) should be employed.
+Typically you would read a source code file then apply changes while performing a update (inplace) of the source file or create a new file containing the updated source.
+
+Standard Template Library (STL) should be employed.
 
 Several functions are made available that perform various programmer tasks.
 <ul>
