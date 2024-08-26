@@ -35,7 +35,7 @@ public:
     wxString        file;
     wxString        fileName;
     wxTextFile      tfile;
-    void strArrToTextFile();
+    void strArrToTextFile(wxString fileName);
     wxString        str;
     void txtToStrArray();
     void upDateTxtFile();
@@ -48,6 +48,8 @@ public:
     wxString GetFamID();
     wxString famID;
     wxString rPath;
+    wxString inPath = "/home/archman/workspace/cb/cpp/cppMySkel1/";
+    wxString formatTime();
 
 private:
 

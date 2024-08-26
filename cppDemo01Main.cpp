@@ -117,9 +117,21 @@ void cppDemo01Frame::OnAbout(wxCommandEvent& event)
     wxMessageBox(msg, _("Welcome to..."));
 }
 
-void cppDemo01Frame::strArrToTextFile()
+wxString GetCurrentDateTime()
 {
-    fileName = "/home/archman/workspace/cb/cpp/cppDemo01/bin/Debug/output.cbp";
+    wxDateTime now = wxDateTime::Now();
+    return now.FormatISOCombined(' ');
+}
+
+wxString cppDemo01Frame::formatTime()
+{
+    wxString dateTime = GetCurrentDateTime();
+    return dateTime;
+}
+
+void cppDemo01Frame::strArrToTextFile(wxString fileName)
+{
+//    fileName = "/home/archman/workspace/cb/cpp/cppDemo01/bin/Debug/output.cbp";
     wxTextFile file(fileName);
     if (!file.Exists())
     {
@@ -144,6 +156,7 @@ void cppDemo01Frame::txtToStrArray()
 {
     srcFile.clear();
     tfile.Open(file);
+    srcFile.Add(tfile.GetFirstLine());
     while (!tfile.Eof())
     {
         srcFile.Add(tfile.GetNextLine());
@@ -151,32 +164,31 @@ void cppDemo01Frame::txtToStrArray()
     tfile.Close();
 }
 
-/**
- * @brief Updates a text file by applying a series of string replacements.
- *
- * This function iterates over each line of the source file `srcFile` and performs
- * string replacements based on a collection of replacement pairs `cs`. Each line
- * in `srcFile` is modified by replacing occurrences of a specified substring (`fro`)
- * with another substring (`too`). The modified lines are stored back in `cmd` for
- * further processing.
- *
- * @note This function assumes that `srcFile` is a collection of strings (e.g., a vector),
- * and `cs` is a collection of structs or classes containing `fro` and `too` strings.
- * The `boost::replace_all` function from the Boost library is used to perform the replacements.
- *
- * Example usage:
- * ```
- * struct ChangeString {
- *     std::string fro;
- *     std::string too;
- * };
- *
- * cppDemo01Frame::upDateTxtFile();
- * ```
- */
 void cppDemo01Frame::upDateTxtFile()
 {
-    std::string cmd;
+    /**
+     * @brief Updates a text file by applying a series of string replacements.
+     *
+     * This function iterates over each line of the source file `srcFile` and performs
+     * string replacements based on a collection of replacement pairs `cs`. Each line
+     * in `srcFile` is modified by replacing occurrences of a specified substring (`fro`)
+     * with another substring (`too`). The modified lines are stored back in `cmd` for
+     * further processing.
+     *
+     * @note This function assumes that `srcFile` is a collection of strings (e.g., a vector),
+     * and `cs` is a collection of structs or classes containing `fro` and `too` strings.
+     * The `boost::replace_all` function from the Boost library is used to perform the replacements.
+     *
+     * Example usage:
+     * ```
+     * struct ChangeString {
+     *     std::string fro;
+     *     std::string too;
+     * };
+     *
+     * cppDemo01Frame::upDateTxtFile();
+     * ```
+     */    std::string cmd;
     for (auto& line : srcFile)
     {
         int ii = 0;
@@ -243,7 +255,7 @@ void cppDemo01Frame::prodProjFile()
         changeStrings newRecord = {"cppDemo01", "cppMySkel1"};
         cs.push_back(newRecord);
         upDateTxtFile();
-        strArrToTextFile();
+        strArrToTextFile("");
     }
 }
 
@@ -295,13 +307,80 @@ bool dirExists(const std::string& dirPath)
     return boost::filesystem::exists(dirPath) && boost::filesystem::is_directory(dirPath);
 }
 
+bool ForceDirectories(const std::string& path) {
+    size_t pos = 0;
+    do {
+        pos = path.find_first_of("/\\", pos + 1);
+        std::string subdir = path.substr(0, pos);
+        if (mkdir(subdir.c_str(), 0755) && errno != EEXIST) {
+            return false;
+        }
+    } while (pos != std::string::npos);
+    return true;
+}
+
 void cppDemo01Frame::OnmenClone1Selected(wxCommandEvent& event)
 {
     famID = GetFamID();
     rPath = "/home/archman/workspace/cb/cpp/" + famID;
+//    file = inPath + "/" + famID + ".cbp";
     if (!dirExists(rPath.ToStdString()))
     {
         boost::filesystem::create_directory(rPath.ToStdString());
+
+        //boost::filesystem::create_directory(rPath.ToStdString() + "/bin");
+
+        std::string cmd;
+        cmd = rPath.ToStdString() + "/bin/Debug";
+        ForceDirectories(cmd);
+        cmd = rPath.ToStdString() + "/bin/Release";
+        ForceDirectories(cmd);
+
+        file = inPath + "cppMySkel1.cbp";
+        txtToStrArray();
+        changeStrings newRecord = {"cppMySkel1", famID.ToStdString()};
+        cs.push_back(newRecord);
+        changeStrings newRecord2 = {"2024-08-24", formatTime().ToStdString()};
+        cs.push_back(newRecord2);
+        upDateTxtFile();
+        strArrToTextFile(rPath + "/" + famID + ".cbp");
+
+        file = inPath + "cppMySkel1App.cpp";
+        txtToStrArray();
+        cs[1].too = formatTime().ToStdString();
+        upDateTxtFile();
+        strArrToTextFile(rPath  + "/" + famID +  "App.cpp");
+
+
+        file = inPath + "cppMySkel1App.h";
+        txtToStrArray();
+        cs[1].too = formatTime().ToStdString();
+        upDateTxtFile();
+        strArrToTextFile(rPath + "/" + famID + "App.h");
+
+        file = inPath + "cppMySkel1Main.cpp";
+        txtToStrArray();
+        cs[1].too = formatTime().ToStdString();
+        upDateTxtFile();
+        strArrToTextFile(rPath + "/" +  famID + "Main.cpp");
+
+        file = inPath + "cppMySkel1Main.h";
+        txtToStrArray();
+        cs[1].too = formatTime().ToStdString();
+        upDateTxtFile();
+        strArrToTextFile(rPath  + "/" +  famID + "Main.h");
+
+        if (!dirExists(rPath.ToStdString() + "wxsmith"))
+        {
+            boost::filesystem::create_directory(rPath.ToStdString() + "/wxsmith");
+            file = inPath + "/wxsmith/" + "cppMySkel1frame.wxs";
+            txtToStrArray();
+            cs[1].too = formatTime().ToStdString();
+            upDateTxtFile();
+            strArrToTextFile(rPath + "/wxsmith/" + famID + "frame.wxs");
+        }
+
     }
+
     famID = famID;
 }
