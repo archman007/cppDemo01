@@ -15,4 +15,4 @@ Several functions are made available that perform various programmer tasks.
 
 Having working examplesl of this level of coding allows the programmer the ability to structure project development.
 
-These loosely coupled routine were organized in such a fashion that a new CodeBlocks project that supports wxWidgets MariaDB Mysql++ and boost is created effortlessly.  This is accomplished by using a skeleton project as a basis for scripting.  By using this approach when additional functionality is needed modify the skeleton code and the results are reflected immediately.
+These loosely coupled routines were organized in such a fashion that a new CodeBlocks project that supports wxWidgets, MariaDB, Mysql++ and boost is created effortlessly.  This is accomplished by using a skeleton project as a basis for scripting.  By using this approach when additional functionality is needed modify the skeleton code and the results are reflected immediately.
