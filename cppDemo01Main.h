@@ -50,6 +50,8 @@ public:
     wxString rPath;
     wxString inPath = "/home/archman/workspace/cb/cpp/cppMySkel1/";
     wxString formatTime();
+    char buffer[80];
+    void FmtDateTime();
 
 private:
 

@@ -15,6 +15,7 @@
 #include <boost/algorithm/string.hpp>
 #include <mysql++.h>
 #include <wx/wx.h>
+#include <ctime>
 
 //(*InternalHeaders(cppDemo01Frame)
 #include <wx/intl.h>
@@ -201,6 +202,7 @@ void cppDemo01Frame::upDateTxtFile()
             ii++;
         }
     }
+
 }
 
 /**
@@ -307,28 +309,44 @@ bool dirExists(const std::string& dirPath)
     return boost::filesystem::exists(dirPath) && boost::filesystem::is_directory(dirPath);
 }
 
-bool ForceDirectories(const std::string& path) {
+bool ForceDirectories(const std::string& path)
+{
     size_t pos = 0;
-    do {
+    do
+    {
         pos = path.find_first_of("/\\", pos + 1);
         std::string subdir = path.substr(0, pos);
-        if (mkdir(subdir.c_str(), 0755) && errno != EEXIST) {
+        if (mkdir(subdir.c_str(), 0755) && errno != EEXIST)
+        {
             return false;
         }
-    } while (pos != std::string::npos);
+    }
+    while (pos != std::string::npos);
     return true;
+}
+
+std::string formatTime(time_t t)
+{
+    char buffer[100];
+    std::tm* tm_info = std::localtime(&t);
+    strftime(buffer, sizeof(buffer), "%A, %B %d, %Y", tm_info);
+    return std::string(buffer);
+}
+
+void cppDemo01Frame::FmtDateTime()
+{
+    std::time_t now = std::time(nullptr);
+    std::tm* localTime = std::localtime(&now);
+    std::strftime(buffer, sizeof(buffer), "%A, %d %B %Y %H:%M:%S", localTime);
 }
 
 void cppDemo01Frame::OnmenClone1Selected(wxCommandEvent& event)
 {
     famID = GetFamID();
     rPath = "/home/archman/workspace/cb/cpp/" + famID;
-//    file = inPath + "/" + famID + ".cbp";
     if (!dirExists(rPath.ToStdString()))
     {
         boost::filesystem::create_directory(rPath.ToStdString());
-
-        //boost::filesystem::create_directory(rPath.ToStdString() + "/bin");
 
         std::string cmd;
         cmd = rPath.ToStdString() + "/bin/Debug";
@@ -340,33 +358,38 @@ void cppDemo01Frame::OnmenClone1Selected(wxCommandEvent& event)
         txtToStrArray();
         changeStrings newRecord = {"cppMySkel1", famID.ToStdString()};
         cs.push_back(newRecord);
-        changeStrings newRecord2 = {"2024-08-24", formatTime().ToStdString()};
+        FmtDateTime();
+        changeStrings newRecord2 = {"2024-08-24", buffer};
         cs.push_back(newRecord2);
         upDateTxtFile();
         strArrToTextFile(rPath + "/" + famID + ".cbp");
 
         file = inPath + "cppMySkel1App.cpp";
         txtToStrArray();
-        cs[1].too = formatTime().ToStdString();
+        FmtDateTime();
+        cs[1].too = buffer;
         upDateTxtFile();
         strArrToTextFile(rPath  + "/" + famID +  "App.cpp");
 
 
         file = inPath + "cppMySkel1App.h";
         txtToStrArray();
-        cs[1].too = formatTime().ToStdString();
+        FmtDateTime();
+        cs[1].too = buffer;
         upDateTxtFile();
         strArrToTextFile(rPath + "/" + famID + "App.h");
 
         file = inPath + "cppMySkel1Main.cpp";
         txtToStrArray();
-        cs[1].too = formatTime().ToStdString();
+        FmtDateTime();
+        cs[1].too = buffer;
         upDateTxtFile();
         strArrToTextFile(rPath + "/" +  famID + "Main.cpp");
 
         file = inPath + "cppMySkel1Main.h";
         txtToStrArray();
-        cs[1].too = formatTime().ToStdString();
+        FmtDateTime();
+        cs[1].too = buffer;
         upDateTxtFile();
         strArrToTextFile(rPath  + "/" +  famID + "Main.h");
 
@@ -375,12 +398,18 @@ void cppDemo01Frame::OnmenClone1Selected(wxCommandEvent& event)
             boost::filesystem::create_directory(rPath.ToStdString() + "/wxsmith");
             file = inPath + "/wxsmith/" + "cppMySkel1frame.wxs";
             txtToStrArray();
-            cs[1].too = formatTime().ToStdString();
+            FmtDateTime();
+            cs[1].too = buffer;
             upDateTxtFile();
             strArrToTextFile(rPath + "/wxsmith/" + famID + "frame.wxs");
         }
+        wxMessageBox("You have just created a new Code Blocks project " + famID + ".",
+                     "BCS Code Blocks Project Generator", wxOK | wxICON_INFORMATION);
+    }
+    else
+    {
+        wxMessageBox("The project you are attempting to create alrealdy exists.",
+                     "BCS Code Blocks Project Generator", wxOK | wxICON_INFORMATION);
 
     }
-
-    famID = famID;
 }
