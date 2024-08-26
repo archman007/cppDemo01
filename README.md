@@ -1,5 +1,4 @@
-This project showcases c++ development using wxWidgets and CodeBlocks.
-Typically you would read a source code file then apply changes while performing a update (inplace) of the source file or create a new file containing the updated source.
+This project demonstrates C++ development using wxWidgets and CodeBlocks. The process involves reading a source code file, applying updates in-place, or generating a new file with the modified content.
 
 Standard Template Library (STL) should be employed.
 
