@@ -52,6 +52,7 @@ public:
     wxString formatTime();
     char buffer[80];
     void FmtDateTime();
+    bool contProcess;
 
 private:
 
@@ -63,8 +64,8 @@ private:
     //*)
 
     //(*Identifiers(cppDemo01Frame)
-    static const long idMenuFCP;
     static const long idMenuCP;
+    static const long idMenuFCP;
     static const long idMenuQuit;
     static const long idMenuAbout;
     static const long ID_STATUSBAR1;

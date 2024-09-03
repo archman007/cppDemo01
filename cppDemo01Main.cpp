@@ -51,8 +51,8 @@ wxString wxbuildinfo(wxbuildinfoformat format)
 }
 
 //(*IdInit(cppDemo01Frame)
-const long cppDemo01Frame::idMenuFCP = wxNewId();
 const long cppDemo01Frame::idMenuCP = wxNewId();
+const long cppDemo01Frame::idMenuFCP = wxNewId();
 const long cppDemo01Frame::idMenuQuit = wxNewId();
 const long cppDemo01Frame::idMenuAbout = wxNewId();
 const long cppDemo01Frame::ID_STATUSBAR1 = wxNewId();
@@ -72,13 +72,13 @@ cppDemo01Frame::cppDemo01Frame(wxWindow* parent,wxWindowID id)
     wxMenuItem* MenuItem1;
     wxMenuItem* MenuItem2;
 
-    Create(parent, id, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxDEFAULT_FRAME_STYLE, _T("id"));
+    Create(parent, id, _("Brooks Computng Systems, LLC CodeBlocks Project"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_FRAME_STYLE, _T("id"));
     MenuBar1 = new wxMenuBar();
     Menu1 = new wxMenu();
-    varMenuLCB = new wxMenuItem(Menu1, idMenuFCP, _("Copy File To Clipboard"), _("Load File To Clipboard"), wxITEM_NORMAL);
-    Menu1->Append(varMenuLCB);
     menClone1 = new wxMenuItem(Menu1, idMenuCP, _("Clone Project"), _("Clone A Project"), wxITEM_NORMAL);
     Menu1->Append(menClone1);
+    varMenuLCB = new wxMenuItem(Menu1, idMenuFCP, _("Copy File To Clipboard"), _("Load File To Clipboard"), wxITEM_NORMAL);
+    Menu1->Append(varMenuLCB);
     MenuItem1 = new wxMenuItem(Menu1, idMenuQuit, _("Quit\tAlt-F4"), _("Quit the application"), wxITEM_NORMAL);
     Menu1->Append(MenuItem1);
     MenuBar1->Append(Menu1, _("&File"));
@@ -93,36 +93,80 @@ cppDemo01Frame::cppDemo01Frame(wxWindow* parent,wxWindowID id)
     StatusBar1->SetFieldsCount(1,__wxStatusBarWidths_1);
     StatusBar1->SetStatusStyles(1,__wxStatusBarStyles_1);
     SetStatusBar(StatusBar1);
+    Center();
 
-    Connect(idMenuFCP,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&cppDemo01Frame::OnvarMenuLCBSelected);
     Connect(idMenuCP,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&cppDemo01Frame::OnmenClone1Selected);
+    Connect(idMenuFCP,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&cppDemo01Frame::OnvarMenuLCBSelected);
     Connect(idMenuQuit,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&cppDemo01Frame::OnQuit);
     Connect(idMenuAbout,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&cppDemo01Frame::OnAbout);
     //*)
 }
 
+/**
+ * Destructor for the cppDemo01Frame class.
+ *
+ * This destructor is responsible for cleaning up any resources or performing any necessary
+ * cleanup tasks when an instance of cppDemo01Frame is destroyed.
+ *
+ * Note: The destructor currently does not perform any specific actions as the implementation
+ *       is commented out.
+ */
 cppDemo01Frame::~cppDemo01Frame()
 {
     //(*Destroy(cppDemo01Frame)
     //*)
 }
 
+/**
+ * @brief Handles the "Quit" command event.
+ *
+ * This method is triggered when a "Quit" command event occurs. It closes the current
+ * window or application by calling the `Close` method.
+ *
+ * @param event The event object containing information about the command event.
+ */
 void cppDemo01Frame::OnQuit(wxCommandEvent& event)
 {
     Close();
 }
 
+/**
+ * @brief Event handler for the "About" command in the cppDemo01Frame class.
+ *
+ * This method is invoked when the "About" menu item or button is clicked.
+ * It displays a message box with build information about the application.
+ *
+ * @param event The wxCommandEvent object containing event information.
+ */
 void cppDemo01Frame::OnAbout(wxCommandEvent& event)
 {
     wxString msg = wxbuildinfo(long_f);
     wxMessageBox(msg, _("Welcome to..."));
 }
 
-wxString GetCurrentDateTime()
+/**
+ * @brief Retrieves the current date and time in ISO 8601 format.
+ *
+ * This function captures the current date and time using wxDateTime::Now()
+ * and formats it as an ISO 8601 combined string with a space as the separator
+ * between the date and time.
+ *
+ * @return wxString containing the formatted current date and time.
+ */
+ wxString GetCurrentDateTime()
 {
     wxDateTime now = wxDateTime::Now();
     return now.FormatISOCombined(' ');
 }
+
+/**
+ * @brief Formats and returns the current date and time as a wxString.
+ *
+ * This function retrieves the current date and time using GetCurrentDateTime()
+ * and returns it as a formatted wxString.
+ *
+ * @return wxString The current date and time.
+ */
 
 wxString cppDemo01Frame::formatTime()
 {
@@ -130,9 +174,20 @@ wxString cppDemo01Frame::formatTime()
     return dateTime;
 }
 
+/**
+ * @brief Writes the contents of the `srcFile` string array to a text file.
+ *
+ * This function takes a file path as an argument, checks if the file exists,
+ * and either creates a new file or opens the existing one. It then clears
+ * the current contents of the file and writes the contents of the `srcFile`
+ * array, line by line, to the file. Finally, the function writes the changes
+ * to the file and closes it.
+ *
+ * @param fileName The path to the file to be written to.
+ */
 void cppDemo01Frame::strArrToTextFile(wxString fileName)
 {
-//    fileName = "/home/archman/workspace/cb/cpp/cppDemo01/bin/Debug/output.cbp";
+    // fileName = "/home/archman/workspace/cb/cpp/cppDemo01/bin/Debug/output.cbp";
     wxTextFile file(fileName);
     if (!file.Exists())
     {
@@ -153,16 +208,28 @@ void cppDemo01Frame::strArrToTextFile(wxString fileName)
     file.Close();
 }
 
+/**
+ * @brief Converts the contents of a text file into a string array.
+ *
+ * This function reads a text file line by line and stores each line
+ * as a string in the `srcFile` array. It starts by clearing the
+ * `srcFile` array, opens the file, and adds the first line to the array.
+ * It then continues to read and add each subsequent line until the end
+ * of the file is reached. Finally, the file is closed.
+ *
+ * @note The `tfile` is expected to be an object that handles file
+ * operations, and `srcFile` is a container for storing the lines of the file.
+ */
 void cppDemo01Frame::txtToStrArray()
 {
-    srcFile.clear();
-    tfile.Open(file);
-    srcFile.Add(tfile.GetFirstLine());
-    while (!tfile.Eof())
+    srcFile.clear();      // Clear the current content of the srcFile array
+    tfile.Open(file);     // Open the text file for reading
+    srcFile.Add(tfile.GetFirstLine());  // Add the first line of the file to srcFile
+    while (!tfile.Eof())  // Continue until the end of the file is reached
     {
-        srcFile.Add(tfile.GetNextLine());
+        srcFile.Add(tfile.GetNextLine());  // Add each subsequent line to srcFile
     }
-    tfile.Close();
+    tfile.Close();        // Close the file
 }
 
 void cppDemo01Frame::upDateTxtFile()
@@ -225,15 +292,31 @@ wxString JoinWxArrayString(const wxArrayString& arr)
     return result;
 }
 
-
+/**
+ * @brief Opens a file dialog to select a text file.
+ *
+ * This function creates a wxFileDialog for selecting a text file within a specified directory.
+ * If the user selects a file and clicks OK, the file path is returned.
+ *
+ * @return wxString The file path of the selected file.
+ */
 wxString cppDemo01Frame::SelFile()
 {
-    wxFileDialog fdlog(this, "Please Select The Desired Text File Now!","/home/archman/workspace/cb/cpp", "", "*.cbp");
+    wxFileDialog fdlog(
+        this,                                 // Parent window
+        "Please Select The Desired Text File Now!",  // Dialog title
+        "/home/archman/workspace/cb/cpp",     // Default directory
+        "",                                   // Default file
+        "*.cbp"                               // File filter (only .cbp files)
+    );
+
     if (fdlog.ShowModal() == wxID_OK)
     {
-        file = fdlog.GetPath();
-        return file;
+        file = fdlog.GetPath();  // Get the selected file path
+        return file;             // Return the file path
     }
+
+    return "";  // Return an empty string if no file was selected
 }
 
 void cppDemo01Frame::prodProjFile()
@@ -261,6 +344,23 @@ void cppDemo01Frame::prodProjFile()
     }
 }
 
+/**
+ * @brief Establishes a connection to a MariaDB database using MySQL++.
+ *
+ * This function attempts to connect to the specified MariaDB database using the provided
+ * credentials (database name, server, username, and password). Upon successful connection,
+ * it outputs a success message. If the connection fails, it outputs a failure message.
+ * Any exceptions thrown by MySQL++ during the connection attempt are caught and logged.
+ *
+ * @note Database details:
+ *  - Database: bcswebtools
+ *  - Server: localhost
+ *  - User: bcs
+ *  - Password: YoPassword
+ *
+ * @throws mysqlpp::Exception if there is an issue with the database connection.
+ */
+
 void cppDemo01Frame::mariaBase()
 {
     const char* db = "bcswebtools";
@@ -287,13 +387,26 @@ void cppDemo01Frame::mariaBase()
     }
 }
 
+// This method is an event handler that gets triggered when an item is selected from a menu with an ID corresponding to varMenuLCB.
+// The method first appears to be calling a commented-out function, `mariaBase()`, and then calls the `prodProjFile()` method.
+// wxCommandEvent& event: Reference to the event object associated with the menu selection.
 void cppDemo01Frame::OnvarMenuLCBSelected(wxCommandEvent& event)
 {
+    // Uncomment this function call if `mariaBase()` needs to be executed upon selection.
     // mariaBase();
 
+    // Process the project file after the menu selection.
     prodProjFile();
 }
 
+// Function: GetFamID
+// Class: cppDemo01Frame
+// Description: Displays a modal dialog prompting the user to input a Family ID.
+// If the user confirms their input, the function returns the entered Family ID as a wxString.
+// If the dialog is canceled, the function returns an empty wxString.
+//
+// Returns:
+// - wxString: The user-provided Family ID or an empty string if the dialog is canceled.
 wxString cppDemo01Frame::GetFamID()
 {
     wxTextEntryDialog dialog(this, "Select Family Id Now:", "Get Family ID");
@@ -302,13 +415,36 @@ wxString cppDemo01Frame::GetFamID()
         wxString text = dialog.GetValue();
         return text;
     }
+    return wxEmptyString;  // Return empty string if the dialog is canceled
 }
 
+/**
+ * @brief Checks if a directory exists at the specified path.
+ *
+ * This function determines whether the given directory path exists
+ * and whether it is a directory.
+ *
+ * @param dirPath The path of the directory to check.
+ * @return true if the directory exists and is a directory, false otherwise.
+ */
 bool dirExists(const std::string& dirPath)
 {
     return boost::filesystem::exists(dirPath) && boost::filesystem::is_directory(dirPath);
 }
 
+/**
+ * Creates the directory structure specified by the given path.
+ *
+ * This function ensures that all directories in the specified path are created.
+ * It iterates through each segment of the path, creating directories as needed.
+ *
+ * @param path The directory path to create. This can be a nested path with multiple directories.
+ * @return Returns true if all directories were successfully created or already exist.
+ *         Returns false if any directory could not be created and errno is not EEXIST.
+ *
+ * Note: This function assumes that the path is a valid directory path and that
+ *       the mkdir function call is available.
+ */
 bool ForceDirectories(const std::string& path)
 {
     size_t pos = 0;
@@ -325,6 +461,17 @@ bool ForceDirectories(const std::string& path)
     return true;
 }
 
+/**
+ * @brief Formats a given time_t value into a human-readable string.
+ *
+ * @param t The time_t value to be formatted.
+ * @return A string representing the formatted time in the format "Weekday, Month Day, Year".
+ *
+ * This function converts a `time_t` value to a local time representation and formats it into a string
+ * with the format "Weekday, Month Day, Year" (e.g., "Sunday, September 02, 2024").
+ *
+ * @note The buffer size is set to 100, which should be sufficient for the specified format.
+ */
 std::string formatTime(time_t t)
 {
     char buffer[100];
@@ -333,83 +480,133 @@ std::string formatTime(time_t t)
     return std::string(buffer);
 }
 
+/**
+ * Formats the current local date and time into a human-readable string.
+ * The resulting string is stored in the `buffer` member variable of the `cppDemo01Frame` class.
+ *
+ * The format of the date and time is:
+ * "DayOfWeek, Day Month Year Hour:Minute:Second"
+ * e.g., "Sunday, 01 September 2024 15:30:00"
+ *
+ * This function uses the C++ standard library's time functions to get the current local time
+ * and formats it using the strftime function.
+ *
+ * @note The buffer used for formatting must be large enough to hold the resulting string.
+ */
 void cppDemo01Frame::FmtDateTime()
 {
     std::time_t now = std::time(nullptr);
     std::tm* localTime = std::localtime(&now);
     std::strftime(buffer, sizeof(buffer), "%A, %d %B %Y %H:%M:%S", localTime);
 }
-
+/**
+ * Handles the event triggered when the menu item for cloning a project is selected.
+ *
+ * This method performs the following steps:
+ * 1. Sets `contProcess` to false and retrieves the family ID using `GetFamID()`.
+ * 2. Constructs a path `rPath` based on the retrieved family ID and checks if the directory exists.
+ * 3. If the directory does not exist:
+ *    - Creates the directory and its subdirectories (`bin/Debug` and `bin/Release`).
+ *    - Prompts the user with a dialog asking if they want to change the project destination.
+ *    - If the user chooses to change the destination, opens a directory dialog for user selection.
+ *    - Updates the project files with the new location and date/time information.
+ *    - Creates a new Code::Blocks project by copying and modifying template files.
+ *    - If the `wxsmith` directory does not exist, creates it and copies a template file.
+ * 4. If the directory already exists, notifies the user that the project already exists.
+ *
+ * @param event The wxCommandEvent that triggered this handler.
+ */
 void cppDemo01Frame::OnmenClone1Selected(wxCommandEvent& event)
 {
+    // Flag to continue processing
+    contProcess = false;
+    // Retrieve family ID and set project path
     famID = GetFamID();
     rPath = "/home/archman/workspace/cb/cpp/" + famID;
+
+    // Check if project directory exists
     if (!dirExists(rPath.ToStdString()))
     {
+        contProcess = true;
+        // Create project directories
         boost::filesystem::create_directory(rPath.ToStdString());
+        ForceDirectories(rPath.ToStdString() + "/bin/Debug");
+        ForceDirectories(rPath.ToStdString() + "/bin/Release");
 
-        std::string cmd;
-        cmd = rPath.ToStdString() + "/bin/Debug";
-        ForceDirectories(cmd);
-        cmd = rPath.ToStdString() + "/bin/Release";
-        ForceDirectories(cmd);
-
-        file = inPath + "cppMySkel1.cbp";
-        txtToStrArray();
-        changeStrings newRecord = {"cppMySkel1", famID.ToStdString()};
-        cs.push_back(newRecord);
-        FmtDateTime();
-        changeStrings newRecord2 = {"2024-08-24", buffer};
-        cs.push_back(newRecord2);
-        upDateTxtFile();
-        strArrToTextFile(rPath + "/" + famID + ".cbp");
-
-        file = inPath + "cppMySkel1App.cpp";
-        txtToStrArray();
-        FmtDateTime();
-        cs[1].too = buffer;
-        upDateTxtFile();
-        strArrToTextFile(rPath  + "/" + famID +  "App.cpp");
-
-
-        file = inPath + "cppMySkel1App.h";
-        txtToStrArray();
-        FmtDateTime();
-        cs[1].too = buffer;
-        upDateTxtFile();
-        strArrToTextFile(rPath + "/" + famID + "App.h");
-
-        file = inPath + "cppMySkel1Main.cpp";
-        txtToStrArray();
-        FmtDateTime();
-        cs[1].too = buffer;
-        upDateTxtFile();
-        strArrToTextFile(rPath + "/" +  famID + "Main.cpp");
-
-        file = inPath + "cppMySkel1Main.h";
-        txtToStrArray();
-        FmtDateTime();
-        cs[1].too = buffer;
-        upDateTxtFile();
-        strArrToTextFile(rPath  + "/" +  famID + "Main.h");
-
-        if (!dirExists(rPath.ToStdString() + "wxsmith"))
+        // Ask user to change project destination
+        int result = wxMessageBox("Would You Like To Change Project Destination?", "New Destination Confirmation", wxYES_NO | wxICON_QUESTION);
+        if (result == wxYES)
         {
-            boost::filesystem::create_directory(rPath.ToStdString() + "/wxsmith");
-            file = inPath + "/wxsmith/" + "cppMySkel1frame.wxs";
+            wxDirDialog dirDlg(this, "Select a directory", "/home/archman/", wxDD_DEFAULT_STYLE);
+            if (dirDlg.ShowModal() == wxID_OK)
+            {
+                rPath = dirDlg.GetPath();
+            }
+        }
+
+        // Proceed with file operations
+        if (contProcess)
+        {
+            // Process and update project files
+            file = inPath + "cppMySkel1.cbp";
+            txtToStrArray();
+            changeStrings newRecord = {"cppMySkel1", famID.ToStdString()};
+            cs.push_back(newRecord);
+            FmtDateTime();
+            changeStrings newRecord2 = {"2024-08-24", buffer};
+            cs.push_back(newRecord2);
+            upDateTxtFile();
+            strArrToTextFile(rPath + "/" + famID + ".cbp");
+
+            file = inPath + "cppMySkel1App.cpp";
             txtToStrArray();
             FmtDateTime();
             cs[1].too = buffer;
             upDateTxtFile();
-            strArrToTextFile(rPath + "/wxsmith/" + famID + "frame.wxs");
+            strArrToTextFile(rPath  + "/" + famID +  "App.cpp");
+
+            file = inPath + "cppMySkel1App.h";
+            txtToStrArray();
+            FmtDateTime();
+            cs[1].too = buffer;
+            upDateTxtFile();
+            strArrToTextFile(rPath + "/" + famID + "App.h");
+
+            file = inPath + "cppMySkel1Main.cpp";
+            txtToStrArray();
+            FmtDateTime();
+            cs[1].too = buffer;
+            upDateTxtFile();
+            strArrToTextFile(rPath + "/" +  famID + "Main.cpp");
+
+            file = inPath + "cppMySkel1Main.h";
+            txtToStrArray();
+            FmtDateTime();
+            cs[1].too = buffer;
+            upDateTxtFile();
+            strArrToTextFile(rPath  + "/" +  famID + "Main.h");
+
+            // Create wxsmith directory and process its file
+            if (!dirExists(rPath.ToStdString() + "wxsmith"))
+            {
+                boost::filesystem::create_directory(rPath.ToStdString() + "/wxsmith");
+                file = inPath + "/wxsmith/" + "cppMySkel1frame.wxs";
+                txtToStrArray();
+                FmtDateTime();
+                cs[1].too = buffer;
+                upDateTxtFile();
+                strArrToTextFile(rPath + "/wxsmith/" + famID + "frame.wxs");
+            }
+
+            // Notify user of successful project creation
+            wxMessageBox("You have just created a new Code Blocks project " + famID + ".",
+                         "BCS Code Blocks Project Generator", wxOK | wxICON_INFORMATION);
         }
-        wxMessageBox("You have just created a new Code Blocks project " + famID + ".",
-                     "BCS Code Blocks Project Generator", wxOK | wxICON_INFORMATION);
     }
     else
     {
-        wxMessageBox("The project you are attempting to create alrealdy exists.",
+        // Notify user that the project already exists
+        wxMessageBox("The project you are attempting to create already exists.",
                      "BCS Code Blocks Project Generator", wxOK | wxICON_INFORMATION);
-
     }
 }
