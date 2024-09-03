@@ -1,5 +1,4 @@
-This project showcases c++ development using wxWidgets and CodeBlocks.
-Typically you would read a source code file then apply changes while performing a update (inplace) of the source file or create a new file containing the updated source.
+This project showcases C++ development with wxWidgets in CodeBlocks. It includes reading a source code file, making in-place updates, and generating a new file with the modified content.
 
 Standard Template Library (STL) should be employed.
 
@@ -13,6 +12,12 @@ Several functions are made available that perform various programmer tasks.
   <li>Convert String Array To String</li>
 </ul>
 
-Having working examplesl of this level of coding allows the programmer the ability to structure project development.
+Having working examples of this level of coding allows the programmer the ability to structure project development.
 
-These loosely coupled routines were organized in such a fashion that a new CodeBlocks project that supports wxWidgets, MariaDB, Mysql++ and boost is created effortlessly.  This is accomplished by using a skeleton project as a basis for scripting.  By using this approach when additional functionality is needed modify the skeleton code and the results are reflected immediately.
+These loosely coupled routines were organized in such a fashion that a new CodeBlocks project that supports wxWidgets, MariaDB, Mysql++ and boost is created effortlessly.  This is accomplished by using a skeleton project https://github.com/archman007/cppMySkel1 as a basis for scripting.  By using this approach when additional functionality is needed modify the skeleton code and the results are reflected immediately.
+
+When creating a new Code::Blocks project, the default settings lack support for essential features like wxWidgets, MySQL++, and Boost. This environment equips the programmer with the necessary tools for advanced development.
+
+When asked for a family id we supplied cppDemo04.
+
+Output from this project can be located here https://github.com/archman007/cppDemo04.
