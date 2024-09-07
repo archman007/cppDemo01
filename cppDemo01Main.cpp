@@ -16,6 +16,8 @@
 #include <mysql++.h>
 #include <wx/wx.h>
 #include <ctime>
+#include <wx/dir.h>
+#include <wx/filename.h>
 
 //(*InternalHeaders(cppDemo01Frame)
 #include <wx/intl.h>
@@ -153,7 +155,7 @@ void cppDemo01Frame::OnAbout(wxCommandEvent& event)
  *
  * @return wxString containing the formatted current date and time.
  */
- wxString GetCurrentDateTime()
+wxString GetCurrentDateTime()
 {
     wxDateTime now = wxDateTime::Now();
     return now.FormatISOCombined(' ');
@@ -608,5 +610,72 @@ void cppDemo01Frame::OnmenClone1Selected(wxCommandEvent& event)
         // Notify user that the project already exists
         wxMessageBox("The project you are attempting to create already exists.",
                      "BCS Code Blocks Project Generator", wxOK | wxICON_INFORMATION);
+    }
+}
+/**
+ * @brief Recursively traverses a directory and collects all files with a specified extension.
+ *
+ * This function opens the given directory and iterates through its contents. If a subdirectory
+ * is encountered, the function recursively traverses that subdirectory. Files with the specified
+ * extension are added to the result vector.
+ *
+ * @param directory The starting directory to traverse.
+ * @param extension The file extension to filter by (e.g., ".txt").
+ * @param result A vector to store the paths of the files that match the specified extension.
+ */
+ void TraverseDirectory(const wxString& directory, const wxString& extension, std::vector<wxString>& result)
+{
+    wxDir dir(directory);
+    if (!dir.IsOpened())
+    {
+        return;
+    }
+
+    wxString filename;
+    bool cont = dir.GetFirst(&filename);
+    while (cont)
+    {
+        wxString filepath = directory + wxFileName::GetPathSeparator() + filename;
+        if (wxDirExists(filepath))
+        {
+            TraverseDirectory(filepath, extension, result);
+        }
+        else if (filepath.EndsWith(extension))
+        {
+            result.push_back(filepath);
+        }
+        cont = dir.GetNext(&filename);
+    }
+}
+
+/**
+ * @brief Traverse a directory to find files with a specific extension.
+ *
+ * This function traverses a given directory and searches for files with the specified extension.
+ * The matching files are collected in a vector and printed out.
+ *
+ * @note This example uses the wxWidgets library.
+ *
+ * @param None
+ * @return void
+ */
+void TravDir()
+{
+    // Vector to store the result of matching files
+    std::vector<wxString> result;
+
+    // Directory to search
+    wxString directory = "/home/archman/workspace";
+
+    // File extension to search for
+    wxString extension = ".cbl";
+
+    // Traverse the directory and populate the result vector with matching files
+    TraverseDirectory(directory, extension, result);
+
+    // Print the results
+    for (const auto& file : result)
+    {
+        wxPuts(file);  // Print each file path to the console
     }
 }
