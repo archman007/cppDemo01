@@ -12,6 +12,7 @@
 #include <wx/arrstr.h>
 #include <wx/textfile.h>
 #include <wx/filedlg.h>
+#include <boost/filesystem.hpp>
 
 //(*Headers(cppDemo01Frame)
 #include <wx/frame.h>
@@ -24,6 +25,8 @@ struct changeStrings
     std::string fro;
     std::string too;
 };
+
+namespace fs = boost::filesystem;
 
 class cppDemo01Frame: public wxFrame
 {
@@ -53,6 +56,12 @@ public:
     char buffer[80];
     void FmtDateTime();
     bool contProcess;
+    wxArrayString fileList;
+    void TravDir(wxString directory, wxString extension);
+    void xTravDir(wxString zDir, wxString zExt);
+    void xTravDir2(wxString zDir, wxString zExt);
+    void rxDir(wxString dir, wxString ext);
+    void list_files_with_extension(const fs::path& directory, const std::string& extension);
 
 private:
 
@@ -61,11 +70,13 @@ private:
     void OnAbout(wxCommandEvent& event);
     void OnvarMenuLCBSelected(wxCommandEvent& event);
     void OnmenClone1Selected(wxCommandEvent& event);
+    void OnmenTravDirSelected(wxCommandEvent& event);
     //*)
 
     //(*Identifiers(cppDemo01Frame)
     static const long idMenuCP;
     static const long idMenuFCP;
+    static const long idMenuTD;
     static const long idMenuQuit;
     static const long idMenuAbout;
     static const long ID_STATUSBAR1;
@@ -73,6 +84,7 @@ private:
 
     //(*Declarations(cppDemo01Frame)
     wxMenuItem* menClone1;
+    wxMenuItem* menTravDir;
     wxMenuItem* varMenuLCB;
     wxStatusBar* StatusBar1;
     //*)

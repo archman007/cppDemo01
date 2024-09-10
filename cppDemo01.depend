@@ -1954,15 +1954,16 @@
 1724052483 /home/archman/workspace/cb/cpp/cppDemo01/cppDemo01App.h
 	<wx/app.h>
 
-1725264298 /home/archman/workspace/cb/cpp/cppDemo01/cppDemo01Main.h
+1725781449 /home/archman/workspace/cb/cpp/cppDemo01/cppDemo01Main.h
 	<wx/arrstr.h>
 	<wx/textfile.h>
 	<wx/filedlg.h>
+	<boost/filesystem.hpp>
 	<wx/frame.h>
 	<wx/menu.h>
 	<wx/statusbr.h>
 
-1725268088 source:/home/archman/workspace/cb/cpp/cppDemo01/cppDemo01Main.cpp
+1725785283 source:/home/archman/workspace/cb/cpp/cppDemo01/cppDemo01Main.cpp
 	"cppDemo01Main.h"
 	<wx/msgdlg.h>
 	<wx/textfile.h>
@@ -1972,6 +1973,10 @@
 	<mysql++.h>
 	<wx/wx.h>
 	<ctime>
+	<wx/dir.h>
+	<wx/filename.h>
+	<boost/filesystem.hpp>
+	<iostream>
 	<wx/intl.h>
 	<wx/string.h>
 
@@ -2918,4 +2923,9 @@
 1715637389 /usr/include/wx-3.2/wx/osx/mdi.h
 
 1715637389 /usr/include/wx-3.2/wx/qt/mdi.h
+
+1715637389 /usr/include/wx-3.2/wx/dir.h
+	"wx/longlong.h"
+	"wx/string.h"
+	"wx/filefn.h"
 

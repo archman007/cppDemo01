@@ -34,6 +34,9 @@
 				<Option projectLinkerOptionsRelation="2" />
 				<Compiler>
 					<Add option="-O2" />
+					<Add directory="./" />
+					<Add directory="/usr/include/mysql++/" />
+					<Add directory="/usr/include/mysql/" />
 				</Compiler>
 				<Linker>
 					<Add option="-s" />

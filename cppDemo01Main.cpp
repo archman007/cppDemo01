@@ -18,6 +18,9 @@
 #include <ctime>
 #include <wx/dir.h>
 #include <wx/filename.h>
+#include <boost/filesystem.hpp>
+#include <iostream>
+
 
 //(*InternalHeaders(cppDemo01Frame)
 #include <wx/intl.h>
@@ -55,6 +58,7 @@ wxString wxbuildinfo(wxbuildinfoformat format)
 //(*IdInit(cppDemo01Frame)
 const long cppDemo01Frame::idMenuCP = wxNewId();
 const long cppDemo01Frame::idMenuFCP = wxNewId();
+const long cppDemo01Frame::idMenuTD = wxNewId();
 const long cppDemo01Frame::idMenuQuit = wxNewId();
 const long cppDemo01Frame::idMenuAbout = wxNewId();
 const long cppDemo01Frame::ID_STATUSBAR1 = wxNewId();
@@ -81,6 +85,8 @@ cppDemo01Frame::cppDemo01Frame(wxWindow* parent,wxWindowID id)
     Menu1->Append(menClone1);
     varMenuLCB = new wxMenuItem(Menu1, idMenuFCP, _("Copy File To Clipboard"), _("Load File To Clipboard"), wxITEM_NORMAL);
     Menu1->Append(varMenuLCB);
+    menTravDir = new wxMenuItem(Menu1, idMenuTD, _("Traverse Directory\tAlt-T"), _("Traverse Directory"), wxITEM_NORMAL);
+    Menu1->Append(menTravDir);
     MenuItem1 = new wxMenuItem(Menu1, idMenuQuit, _("Quit\tAlt-F4"), _("Quit the application"), wxITEM_NORMAL);
     Menu1->Append(MenuItem1);
     MenuBar1->Append(Menu1, _("&File"));
@@ -99,6 +105,7 @@ cppDemo01Frame::cppDemo01Frame(wxWindow* parent,wxWindowID id)
 
     Connect(idMenuCP,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&cppDemo01Frame::OnmenClone1Selected);
     Connect(idMenuFCP,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&cppDemo01Frame::OnvarMenuLCBSelected);
+    Connect(idMenuTD,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&cppDemo01Frame::OnmenTravDirSelected);
     Connect(idMenuQuit,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&cppDemo01Frame::OnQuit);
     Connect(idMenuAbout,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&cppDemo01Frame::OnAbout);
     //*)
@@ -623,7 +630,7 @@ void cppDemo01Frame::OnmenClone1Selected(wxCommandEvent& event)
  * @param extension The file extension to filter by (e.g., ".txt").
  * @param result A vector to store the paths of the files that match the specified extension.
  */
- void TraverseDirectory(const wxString& directory, const wxString& extension, std::vector<wxString>& result)
+void TraverseDirectory(const wxString& directory, const wxString& extension, std::vector<wxString>& result)
 {
     wxDir dir(directory);
     if (!dir.IsOpened())
@@ -649,26 +656,19 @@ void cppDemo01Frame::OnmenClone1Selected(wxCommandEvent& event)
 }
 
 /**
- * @brief Traverse a directory to find files with a specific extension.
+ * @brief Traverses a directory and prints all files matching a specific extension.
  *
- * This function traverses a given directory and searches for files with the specified extension.
- * The matching files are collected in a vector and printed out.
+ * This function takes a directory and file extension as input, recursively traverses the directory,
+ * and collects all files matching the given extension. The matching files are then printed to the console.
  *
- * @note This example uses the wxWidgets library.
- *
- * @param None
- * @return void
+ * @param directory The directory to traverse.
+ * @param extension The file extension to match (e.g., ".txt", ".jpg").
  */
-void TravDir()
+void cppDemo01Frame::TravDir(wxString directory, wxString extension)
 {
+    fileList.Clear();
     // Vector to store the result of matching files
     std::vector<wxString> result;
-
-    // Directory to search
-    wxString directory = "/home/archman/workspace";
-
-    // File extension to search for
-    wxString extension = ".cbl";
 
     // Traverse the directory and populate the result vector with matching files
     TraverseDirectory(directory, extension, result);
@@ -676,6 +676,138 @@ void TravDir()
     // Print the results
     for (const auto& file : result)
     {
-        wxPuts(file);  // Print each file path to the console
+        fileList.Add(file);
+//        wxPuts(file);  // Print each file path to the console
     }
+}
+
+/**
+ * @brief Traverses a directory and performs an operation based on the file extension.
+ *
+ * This method calls the `TravDir` function with the provided directory and file extension.
+ *
+ * @param zDir The directory path to traverse.
+ * @param zExt The file extension to filter the files.
+ */
+void cppDemo01Frame::xTravDir(wxString zDir, wxString zExt)
+{
+    TravDir(zDir, zExt);
+    int inr = fileList.Count();
+    inr = inr;
+}
+
+// Function: xTravDir2
+// Class: cppDemo01Frame
+// Parameters:
+//    - zDir: The directory path (as a wxString) to be processed.
+//    - zExt: The file extension filter (as a wxString) used during the directory traversal.
+// Description:
+//    This function processes the given directory `zDir` with the specified file extension filter `zExt`.
+//    The `rxDir` function is called to perform the core logic of the directory traversal or processing.
+//    The file count from `fileList` is retrieved but currently not used.
+//
+// Note:
+//    The function has some commented-out code related to using the filesystem (fs::path) library,
+//    which might have been intended for future or alternative implementation.
+//
+// Parameters:
+//    - zDir: Directory path as a wxString.
+//    - zExt: File extension filter as a wxString.
+//
+// The final value of `inr` is set to the count of files from the `fileList`, but it doesn't seem to be used.
+void cppDemo01Frame::xTravDir2(wxString zDir, wxString zExt)
+{
+    //    TravDir2(zDir, zExt);
+    // fs::path dir = zDir.ToStdString();
+    // fs::path zDir =
+
+    rxDir(zDir, zExt);
+    int inr = fileList.Count();
+    inr = inr; // This line appears to do nothing
+}
+
+/**
+ * @brief Event handler for menu item selection in cppDemo01Frame.
+ *
+ * This function is triggered when the user selects an option from the
+ * menu related to traversal direction. It calls the `xTravDir` function
+ * with the workspace path and the file extension filter.
+ *
+ * @param event The wxCommandEvent that triggered this function.
+ */
+void cppDemo01Frame::OnmenTravDirSelected(wxCommandEvent& event)
+{
+    //xTravDir("/home/archman/workspace/", ".cbl");
+    std::string dir = "/home/archman/workspace";
+    xTravDir2(dir, ".cob");
+
+}
+
+/**
+ * @brief Lists all files with a specified extension in a given directory and its subdirectories.
+ *
+ * This method clears the existing file list, then searches the specified directory and its
+ * subdirectories for files with the given extension. It adds each found file to the `fileList`
+ * container and prints the file path to the console. If the directory does not exist or is not
+ * a valid directory, an error message is printed. If a filesystem error occurs during the
+ * operation, it is caught and reported.
+ *
+ * @param directory The directory to search for files in. This must be a valid filesystem path.
+ * @param extension The file extension to filter files by (e.g., ".txt"). Only files with this
+ *                  extension will be listed.
+ *
+ * @throws fs::filesystem_error If an error occurs while accessing the filesystem.
+ */
+void cppDemo01Frame::list_files_with_extension(const fs::path& directory, const std::string& extension)
+{
+    // Clear the file list before adding new entries
+    fileList.Clear();
+
+    try
+    {
+        // Check if the directory exists and is actually a directory
+        if (boost::filesystem::exists(directory) && boost::filesystem::is_directory(directory))
+        {
+            // Iterate through the directory and its subdirectories
+            for (auto& entry : boost::filesystem::recursive_directory_iterator(directory))
+            {
+                // Check if the current entry is a regular file with the specified extension
+                if (boost::filesystem::is_regular_file(entry) && entry.path().extension() == extension)
+                {
+                    // Add the file path to the file list and print it to the console
+                    fileList.Add(entry.path().string());
+                    std::cout << entry.path().string() << std::endl;
+                }
+            }
+        }
+        else
+        {
+            // Print an error if the directory does not exist or is not a directory
+            std::cerr << "Directory does not exist or is not a directory." << std::endl;
+        }
+    }
+    catch (const fs::filesystem_error& e)
+    {
+        // Catch and print any filesystem errors that occur
+        std::cerr << e.what() << std::endl;
+    }
+}
+
+/**
+ * @brief Processes a directory and lists files with a specific extension.
+ *
+ * This function converts the received wxString directory and file extension
+ * to `std::filesystem::path` and `std::string`, respectively. It then calls
+ * `list_files_with_extension()` to find files in the directory with the specified
+ * extension. The number of files found is stored in `fcnt` but isn't used.
+ *
+ * @param rdir The directory to search in, represented as a `wxString`.
+ * @param rext The file extension to search for, represented as a `wxString`.
+ */
+void cppDemo01Frame::rxDir(wxString rdir, wxString rext)
+{
+    fs::path dir = rdir.ToStdString();                    // Convert wxString to std::filesystem::path
+    list_files_with_extension(dir, rext.ToStdString());   // List files with the specified extension
+    int fcnt = fileList.Count();                          // Store the count of files found (unused)
+    fcnt = fcnt;                                          // (Potentially a placeholder line)
 }
